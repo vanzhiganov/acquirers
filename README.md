@@ -11,7 +11,7 @@ Result
 ```json
 {
     "Success": true,
-    "ErrorCode": "0:,
+    "ErrorCode": "0",
     "TerminalKey": "1520095906182DEMO",
     "Status": "NEW",
     "PaymentId": "14458036",
