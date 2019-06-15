@@ -3,7 +3,8 @@
 ```python
 from Acquirers.Tinkoff import TinkoffSimplePayment
 
-result = TinkoffSimplePayment(terminal_id, password).init(tr.id, amount_tinkoff)
+t = TinkoffSimplePayment(terminal_id, password)
+t.init(tr.id, amount_tinkoff)
 ```
 
 Result
