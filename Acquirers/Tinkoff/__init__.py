@@ -1,5 +1,6 @@
 
 import requests
+from .exceptions import TinkoffException
 
 
 class TinkoffBase(object):
@@ -8,22 +9,8 @@ class TinkoffBase(object):
         self.password = password
 
 
-class TinkoffException(Exception):
-    def __init__(self, error):
-        self.raw = error
-        self.code = error['ErrorCode']
-        self.message = error['Message']
-        self.details = error['Details']
-        self.success = error['Success']
-
-    # def __repr__(self):
-    #     return "<TinkoffError code={} message={}>".format(self.code, self.message)
-
-
 class TinkoffSimplePayment(TinkoffBase):
-    def init(self, order_id, amount, ip=None, description=None, currency=None,
-        token=None, language=None, customer_key=None, recurent=None, redirect_due_date=None,
-        data=None, receipt=None):
+    def init(self, order_id, amount, ip=None, description=None, currency=None, token=None, language=None, customer_key=None, recurent=None, redirect_due_date=None, data=None, receipt=None):
         """Init - создание заказа
 
         :param:
@@ -37,19 +24,21 @@ class TinkoffSimplePayment(TinkoffBase):
             'Amount': 100,
             'PaymentURL': 'https://securepay.tinkoff.ru/pX81zg'
         }
+
+
+        Errors:
+        {'Success': False, 'ErrorCode': '9999', 'Message': 'Неверные параметры.', 'Details': 'Неверный токен. Проверьте пару TerminalKey/SecretKey.'}
         """
-        data = {
-            'TerminalKey': self.terminal_id
-        }
+        data = dict()
+        data['TerminalKey'] = self.terminal_id
         data['Amount'] = amount
         data['OrderId'] = order_id
 
         request = requests.post('https://securepay.tinkoff.ru/v2/Init', json=data)
         data = request.json()
 
-        # TODO: 
-        # if data.get('ErrorCode') != '0':
-        #     raise TinkoffException(data)
+        if not data.get('Success'):
+            raise TinkoffException(data)
 
         return data
     
@@ -105,9 +94,12 @@ class TinkoffRecurrentPayment(TinkoffBase):
 class TinkoffCards(TinkoffBase):
     def add_customer(self):
         pass
+
     def get_customer(self):
         pass
+
     def remove_customer(self):
         pass
+
     def get_card_list(self):
         pass
