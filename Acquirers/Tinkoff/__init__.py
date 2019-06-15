@@ -1,5 +1,4 @@
 
-from uuid import uuid4
 import requests
 
 
@@ -43,7 +42,7 @@ class TinkoffSimplePayment(TinkoffBase):
             'TerminalKey': self.terminal_id
         }
         data['Amount'] = amount
-        data['OrderId'] = order_id#str(uuid4())
+        data['OrderId'] = order_id
 
         request = requests.post('https://securepay.tinkoff.ru/v2/Init', json=data)
         data = request.json()
