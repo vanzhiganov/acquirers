@@ -12,3 +12,11 @@ class TinkoffException(Exception):
         return "<TinkoffException success={} code={} message={} details={}>".format(
             self.success, self.code, self.message, self.details
         )
+
+
+class TinkoffParameterException(Exception):
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return """<TinkoffParameterException name={}>""".format(self.name)
