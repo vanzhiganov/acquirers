@@ -31,18 +31,13 @@ Result
 from Acquirers.Rocketpay import RocketpaySimplePayment
 
 rp = RocketpaySimplePayment()
-rp.merchant = '4'
+rp.merchant_id = '4'
 rp.secret_key = '265af92d-1ed8-433b-8c54-fa02a45f1227'
 ```
 
 Инициируем платёж
 
 ```python
-rp.init({
-    "merchant_id": "4",
-    "order_id": "123",
-    "amount": "1",
-    "sign": "265af92d-1ed8-433b-8c54-fa02a45f1227"
-})
+rp.init(order_id="example", amount="1.0")
 ```
 
