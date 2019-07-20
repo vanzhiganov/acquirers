@@ -129,16 +129,46 @@ class TinkoffSimplePayment(TinkoffBase):
         url = 'https://securepay.tinkoff.ru/v2/Cancel'
         return None
     
-    def get_state(self):
+    def get_state(self, payment_id, amount=None, ip=None):
         """Возвращает текуший статус платежа.
+
+        Пример отправки запроса
+        {
+         "TerminalKey":"TinkoffBankTest",
+         "PaymentId":"2304882",
+         "Token":"c0ad1dfc4e94ed44715c5ed0e84f8ec439695b9ac219a7a19555a075a3c3ed24"
+        }
+
+        Пример ответа
+        {
+         "Success": true,
+         "ErrorCode": "0",
+         "Message": "OK",
+         "TerminalKey": "TinkoffBankTest",
+         "Status": "DEADLINE_EXPIRED",
+         "PaymentId": "2304882",
+         "OrderId": "#419",
+         "Amount": 1100
+        }
         """
         url = 'https://securepay.tinkoff.ru/v2/GetState'
-        # request = requests.post('https://securepay.tinkoff.ru/v2/Init', json=data)
-        # data = request.json()
-        #
-        # if not data.get('Success'):
-        #     raise TinkoffException(data)
 
+        data = dict()
+        data['TerminalKey'] = self.terminal_id
+        data['PaymentId'] = payment_id
+        if amount:
+            data['Amount'] = amount
+        if ip:
+            data['IP'] = ip
+
+        data['Token'] = self.get_signature(data)
+
+        request = requests.post(url, json=data)
+        data = request.json()
+
+        if not data.get('Success'):
+            raise TinkoffException(data)
+        return data
     
     def resend(self):
         """Resend - отправка недоставленных нотификаций
