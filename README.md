@@ -2,6 +2,8 @@
 
 ## Tinkoff
 
+API Documnetation: https://oplata.tinkoff.ru/landing/develop/documentation/processing_payment
+
 ```python
 from Acquirers.Tinkoff import TinkoffSimplePayment
 
@@ -23,6 +25,10 @@ Result
     "PaymentURL": "https://securepay.tinkoff.ru/pX81zg"
 }
 ```
+
+## Yandex.kassa
+
+API Doc: https://kassa.yandex.ru/developers/api
 
 
 ## Rocketpay

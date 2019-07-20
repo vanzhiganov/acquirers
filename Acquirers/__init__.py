@@ -1,4 +1,5 @@
 __all__ = [
     'Tinkoff',
-    'Rocketpay'
+    'Rocketpay',
+    'Yandexcheckout',
 ]
