@@ -45,7 +45,7 @@ class RocketpaySimplePayment(RocketpayBase):
 
         response = requests.post(self.url + '/api/v1/process/init', json=data)
 
-        if response.status_code != 201:
+        if response.status_code not in [200, 201]:
             raise RocketpayException(response.json())
 
         return response.json()
