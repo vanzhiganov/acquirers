@@ -38,6 +38,7 @@ from Acquirers.Rocketpay import RocketpaySimplePayment
 
 rp = RocketpaySimplePayment()
 rp.merchant_id = '4'
+rp.terminal_id = '4'
 rp.secret_key = '265af92d-1ed8-433b-8c54-fa02a45f1227'
 ```
 

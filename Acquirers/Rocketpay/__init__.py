@@ -7,16 +7,21 @@ from .exceptions import RocketpayException
 
 
 class RocketpayBase(object):
-    def __init__(self, merchant_id=None, secret_key=None):
+    def __init__(self, merchant_id=None, terminal_id=None, secret_key=None):
         self.url = 'http://proc.rocketpay.ru'
         self.merchant_id = merchant_id
+        self.terminal_id = terminal_id
         self.secret_key = secret_key
 
     def sign_hmac(self, data):
         data_list = list()
         for d in sorted(list(data)):
-            data_list.append(data.get(d))
-        return hmac.new(self.secret_key.encode(), ''.join(data_list).encode(), sha1).hexdigest()
+            data_list.append(str(data.get(d)))
+        return hmac.new(
+            self.secret_key.encode(),
+            ''.join(data_list).encode(),
+            sha1
+        ).hexdigest()
 
 
 class RocketpaySimplePayment(RocketpayBase):
@@ -27,6 +32,7 @@ class RocketpaySimplePayment(RocketpayBase):
         """
         data = {
             "merchant_id": self.merchant_id,
+            "terminal_id": self.terminal_id,
             "amount": amount,
             "order_id": order_id,
         }
