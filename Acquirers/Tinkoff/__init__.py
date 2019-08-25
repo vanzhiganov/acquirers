@@ -125,9 +125,33 @@ class TinkoffSimplePayment(TinkoffBase):
         """Cancel - отмена платежа
         Отменяет платёжную сессию. В зависимости от статуса платежа
         переводит его в следующие состояния
+
+        **Пример отправки запроса**
+        {
+            "TerminalKey":"TinkoffBankTest",
+            "PaymentId":"2164657",
+            "Token":"328a1ed43e3800c142b298fbb01772c739c524dd455717c8a9152428037439fb"
+        }
         """
+        data = dict()
+        data['TerminalKey'] = self.terminal_id
+        # data['IP'] = ip
+
+        # Сумма отмены в копейках (**)
+        # (*) в случае отмены платежа в статусах NEW или AUTHORIZED поле Amount, даже если оно проставлено, игнорируется. Отмена из статусов NEW или AUTHORIZED производится на полную сумму.
+        # (**) в случае отмены платежа в статусе CONFIRMED, клиент может указать сумму отмены явно. Если сумма отмены меньше суммы платежа, будет произведена частичная отмена. Частичную отмену можно производить до тех пор, пока платёж не будет полностью отменён. На каждую отмену на Notifcation URL будет отправляться нотификация CANCEL.
+        # data['Amount'] = amount
+
+        data['Token'] = self.get_signature(data)
+
         url = 'https://securepay.tinkoff.ru/v2/Cancel'
-        return None
+        request = requests.post(url, json=data)
+        data = request.json()
+
+        if not data.get('Success'):
+            raise TinkoffException(data)
+
+        return data
     
     def get_state(self, payment_id, amount=None, ip=None):
         """Возвращает текуший статус платежа.
