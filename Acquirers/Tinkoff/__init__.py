@@ -209,7 +209,12 @@ class TinkoffSimplePayment(TinkoffBase):
 
         Response:
 
-            {"Success":true,"ErrorCode":"0","TerminalKey":"TestB","Count":2}
+            {
+                "Success":true,
+                "ErrorCode":"0",
+                "TerminalKey":"TestB",
+                "Count":2
+            }
         """
         data = dict()
         data['TerminalKey'] = self.terminal_id
