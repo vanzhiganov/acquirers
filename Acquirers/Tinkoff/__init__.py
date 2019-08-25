@@ -121,7 +121,7 @@ class TinkoffSimplePayment(TinkoffBase):
         url = 'https://securepay.tinkoff.ru/v2/Confirm'
         return None
     
-    def cancel(self):
+    def cancel(self, payment_id):
         """Cancel - отмена платежа
         Отменяет платёжную сессию. В зависимости от статуса платежа
         переводит его в следующие состояния
@@ -135,11 +135,18 @@ class TinkoffSimplePayment(TinkoffBase):
         """
         data = dict()
         data['TerminalKey'] = self.terminal_id
+        data['PaymentId'] = payment_id
         # data['IP'] = ip
 
         # Сумма отмены в копейках (**)
-        # (*) в случае отмены платежа в статусах NEW или AUTHORIZED поле Amount, даже если оно проставлено, игнорируется. Отмена из статусов NEW или AUTHORIZED производится на полную сумму.
-        # (**) в случае отмены платежа в статусе CONFIRMED, клиент может указать сумму отмены явно. Если сумма отмены меньше суммы платежа, будет произведена частичная отмена. Частичную отмену можно производить до тех пор, пока платёж не будет полностью отменён. На каждую отмену на Notifcation URL будет отправляться нотификация CANCEL.
+        # (*) в случае отмены платежа в статусах NEW или AUTHORIZED поле Amount,
+        # даже если оно проставлено, игнорируется. Отмена из статусов NEW или AUTHORIZED
+        # производится на полную сумму.
+        # (**) в случае отмены платежа в статусе CONFIRMED, клиент может указать сумму
+        # отмены явно. Если сумма отмены меньше суммы платежа, будет произведена 
+        # частичная отмена. Частичную отмену можно производить до тех пор,
+        # пока платёж не будет полностью отменён. На каждую отмену на Notifcation URL
+        # будет отправляться нотификация CANCEL.
         # data['Amount'] = amount
 
         data['Token'] = self.get_signature(data)
@@ -199,8 +206,21 @@ class TinkoffSimplePayment(TinkoffBase):
         Метод предназначен для отправки всех неотправленных нотификаций,
         например, в случае недоступности в какой-либо момент времени сайта
         продавца.
+
+        Response:
+
+            {"Success":true,"ErrorCode":"0","TerminalKey":"TestB","Count":2}
         """
+        data = dict()
+        data['TerminalKey'] = self.terminal_id
+        data['Token'] = self.get_signature(data)
+
         url = 'https://securepay.tinkoff.ru/v2/Resend'
+
+        request = requests.post(url, json=data)
+        response = request.json()
+
+        return response
 
 
 class TinkoffRecurrentPayment(TinkoffBase):
