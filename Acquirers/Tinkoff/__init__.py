@@ -1,11 +1,11 @@
+"""Acquirer"""
 from hashlib import sha256
 import requests
 from .exceptions import TinkoffException, TinkoffSimplePaymentInitParameterRequiredException
 
 
-
 class TinkoffBase(object):
-    def __init__(self, terminal_id, password):
+    def __init__(self, terminal_id: str, password: str):
         self.terminal_id = terminal_id
         self.password = password
 
@@ -30,7 +30,7 @@ class TinkoffBase(object):
 
 class TinkoffSimplePayment(TinkoffBase):
     @staticmethod
-    def _get_language(language: str):
+    def _get_language(language: str) -> str:
         default = 'ru'
         if language.lower() not in ['ru', 'en']:
             return default
@@ -40,7 +40,6 @@ class TinkoffSimplePayment(TinkoffBase):
     @staticmethod
     def _is_recurrent(is_recurrent: bool) -> str:
         return 'y' if is_recurrent else 'n'
-
 
     def init(self, order_id, amount, ip=None, description=None, currency=None, language=None,
              customer_key=None, recurrent=False, redirect_due_date=None, data=None, receipt=None, sign_request=False):
@@ -88,7 +87,6 @@ class TinkoffSimplePayment(TinkoffBase):
         if sign_request:
             data['Token'] = self.get_signature(data)
 
-
         request = requests.post('https://securepay.tinkoff.ru/v2/Init', json=data)
         data = request.json()
 
@@ -132,6 +130,9 @@ class TinkoffSimplePayment(TinkoffBase):
             "PaymentId":"2164657",
             "Token":"328a1ed43e3800c142b298fbb01772c739c524dd455717c8a9152428037439fb"
         }
+
+        **Привет ответа**
+        
         """
         data = dict()
         data['TerminalKey'] = self.terminal_id
@@ -147,6 +148,7 @@ class TinkoffSimplePayment(TinkoffBase):
         # частичная отмена. Частичную отмену можно производить до тех пор,
         # пока платёж не будет полностью отменён. На каждую отмену на Notifcation URL
         # будет отправляться нотификация CANCEL.
+        # 
         # data['Amount'] = amount
 
         data['Token'] = self.get_signature(data)
@@ -237,14 +239,97 @@ class TinkoffRecurrentPayment(TinkoffBase):
 
 
 class TinkoffCards(TinkoffBase):
-    def add_customer(self):
-        pass
+    def add_customer(self, customer_key: str, email=None, phone=None, ip=None) -> dict:
+        """Данный метод регистрирует покупателя в системе и привязывает его к магазину Продавца.
+        """
+        url = "https://securepay.tinkoff.ru/v2/AddCustomer"
+        data = dict()
+        data['TerminalKey'] = self.terminal_id
+        data['CustomerKey'] = customer_key
+        if email:
+            data['Email'] = email
+        if phone:
+            data['Phone'] = phone
+        if ip:
+            data['IP'] = ip
 
-    def get_customer(self):
-        pass
+        request = requests.post(url, json=data)
+        response = request.json()
 
-    def remove_customer(self):
-        pass
+        return response
 
-    def get_card_list(self):
-        pass
+    def get_customer(self, customer_key: str, ip=None) -> dict:
+        url = "https://securepay.tinkoff.ru/v2/GetCustomer"
+        data = dict()
+        data['TerminalKey'] = self.terminal_id
+        data['CustomerKey'] = customer_key
+        if ip:
+            data['IP'] = ip
+        data['Token'] = self.get_signature(data)
+
+        request = requests.post(url, json=data)
+        response = request.json()
+
+        return response
+
+    def remove_customer(self, customer_key: str, ip=None) -> dict:
+        """Удаляет данные покупателя
+
+        :param customer_key:
+        :param ip:
+        :return:
+        """
+        url = "https://securepay.tinkoff.ru/v2/RemoveCustomer"
+
+        data = dict()
+        data['TerminalKey'] = self.terminal_id
+        data['CustomerKey'] = customer_key
+        if ip:
+            data['IP'] = ip
+        data['Token'] = self.get_signature(data)
+
+        request = requests.post(url, json=data)
+        response = request.json()
+
+        return response
+
+    def get_card_list(self, customer_key: str, ip=None) -> dict:
+        """Возвращает список привязанных карт у клиента, привязанного к магазину
+
+        Ссылка на документацию: https://oplata.tinkoff.ru/landing/develop/documentation/GetCardList
+
+        >>> TinkoffCards("TinkoffBankTest", "Password").get_card_list("Customer1")
+        {
+          "CardId": "881900",
+          "Pan": "518223******0036",
+          "Status": "D",
+          "RebillId": " ",
+          "CardType": 0,
+          "ExpDate": "1122"
+        },
+        {
+          "CardId": "882263",
+          "Pan": "448744******4487",
+          "Status": "A",
+          "RebillId": " ",
+          "CardType": 0,
+          "ExpDate": "0619"
+        }
+
+        :param customer_key: str
+        :param ip: str
+        :return: dict
+        """
+        url = "https://securepay.tinkoff.ru/v2/GetCardList"
+
+        data = dict()
+        data['TerminalKey'] = self.terminal_id
+        data['CustomerKey'] = customer_key
+        if ip:
+            data['IP'] = ip
+        data['Token'] = self.get_signature(data)
+
+        request = requests.post(url, json=data)
+        response = request.json()
+
+        return response
