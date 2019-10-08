@@ -231,14 +231,46 @@ class TinkoffSimplePayment(TinkoffBase):
 
 
 class TinkoffRecurrentPayment(TinkoffBase):
-    def init(self):
-        pass
-    
-    def charge(self):
-        pass
+    """Рекуррентный платёж.
+    По умолчанию рекуррентные платежи отключены.
+    Для использования данного типа платежей обратитесь в банк.
+    """
+
+    def init(self, order_id, amount, customer_key, ip=None, description=None, currency=None,
+             language=None, redirect_due_date=None, data=None, receipt=None, sign_request=False):
+        simple = TinkoffSimplePayment(self.terminal_id, self.password)
+
+        return simple.init(order_id, amount, ip, description, currency, language,
+                           customer_key, True, redirect_due_date, data, receipt,
+                           sign_request)
+
+    def charge(self, payment_id, rebill_id, ip=None, send_email=False, info_email=None):
+        url = "https://securepay.tinkoff.ru/v2/Charge"
+        data = dict()
+        data['TerminalKey'] = self.terminal_id
+        data['PaymentId'] = payment_id
+        if ip:
+            data['IP'] = ip
+        data['RebillId'] = rebill_id
+
+        if send_email:
+            data['SendEmail'] = send_email
+
+        if info_email:
+            # TODO: Обязателен при передаче SendEmail. Сделать проверку.
+            data['InfoEmail'] = info_email
+
+        data['Token'] = self.get_signature(data)
+
+        request = requests.post(url, json=data)
+        response = request.json()
+
+        return response
 
 
 class TinkoffCards(TinkoffBase):
+    """Привязка и хранение карт"""
+
     def add_customer(self, customer_key: str, email=None, phone=None, ip=None) -> dict:
         """Данный метод регистрирует покупателя в системе и привязывает его к магазину Продавца.
         """
