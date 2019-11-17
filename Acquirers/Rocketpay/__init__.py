@@ -8,7 +8,7 @@ from .exceptions import RocketpayException
 
 class RocketpayBase(object):
     def __init__(self, merchant_id=None, terminal_id=None, secret_key=None):
-        self.url = 'http://proc.rocketpay.ru'
+        self.url = 'https://secure.rocketpay.ru'
         self.merchant_id = merchant_id
         self.terminal_id = terminal_id
         self.secret_key = secret_key
@@ -25,10 +25,11 @@ class RocketpayBase(object):
 
 
 class RocketpaySimplePayment(RocketpayBase):
-    def init(self, order_id, amount, email=None, phone=None):
+    def init(self, order_id, amount, email=None, phone=None, recurrent=False):
         """
         
-        >>> RocketpayPayment().init(**):
+        >>> RocketpaySimplePayment("merchant", "terminal", "secret").init("", "", **{"": ""})
+        {}
         """
         data = {
             "merchant_id": self.merchant_id,
@@ -49,3 +50,14 @@ class RocketpaySimplePayment(RocketpayBase):
             raise RocketpayException(response.json())
 
         return response.json()
+
+
+class RocketPayCustomers(RocketpayBase):
+    def add(self):
+        return None
+    def get(self):
+        return None
+    def delete(self):
+        return None
+    def get_card_list(self):
+        return None

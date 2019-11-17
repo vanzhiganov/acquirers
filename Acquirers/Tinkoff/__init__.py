@@ -1,4 +1,4 @@
-"""Acquirer"""
+"""Acquirer Tinkoff"""
 from hashlib import sha256
 import requests
 from .exceptions import TinkoffException, TinkoffSimplePaymentInitParameterRequiredException
@@ -271,7 +271,7 @@ class TinkoffRecurrentPayment(TinkoffBase):
 class TinkoffCards(TinkoffBase):
     """Привязка и хранение карт"""
 
-    def add_customer(self, customer_key: str, email=None, phone=None, ip=None) -> dict:
+    def add_customer(self, customer_key: str, email: str = None, phone: str = None, ip: str = None) -> dict:
         """Данный метод регистрирует покупателя в системе и привязывает его к магазину Продавца.
         """
         url = "https://securepay.tinkoff.ru/v2/AddCustomer"
