@@ -1,5 +1,12 @@
 # Acquirers
 
+## Install
+
+```shell
+pip install Acquirers
+```
+
+
 ## Tinkoff
 
 API Documnetation: https://oplata.tinkoff.ru/landing/develop/documentation/processing_payment
