@@ -1,5 +1,12 @@
 # Acquirers
 
+## Who uses this module
+
+- http://www.procdn.net
+- http://www.gocloud.ru
+- http://www.glavpodcast.ru
+- http://www.zettadns.com
+
 ## Install
 
 ```shell
