@@ -13,7 +13,7 @@
 
 - [A-3](https://www.a-3.ru)
 - [Tinkoff](https://oplata.tinkoff.ru/landing/develop/documentation/processing_payment)
-- [Robokassa][https://robokassa.ru]
+- [Robokassa](https://robokassa.ru)
 
 ## Install
 
