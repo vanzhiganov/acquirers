@@ -1,7 +1,6 @@
 # Acquirers
 
-![Acquirers at PYPI](https://img.shields.io/pypi/v/acquirers.svg)
-
+[![Acquirers at PYPI](https://img.shields.io/pypi/v/acquirers.svg)](https://pypi.org/project/Acquirers/)
 
 ## Who uses this module
 
