@@ -1,5 +1,8 @@
 # Acquirers
 
+![Acquirers at PYPI](https://img.shields.io/pypi/v/acquirers.svg)
+
+
 ## Who uses this module
 
 - http://www.procdn.net
