@@ -9,6 +9,11 @@
 - http://www.glavpodcast.ru
 - http://www.zettadns.com
 
+## Supported Acquirers
+
+- Tinkoff
+- Yandex.Money
+
 ## Install
 
 ```shell
