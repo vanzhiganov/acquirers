@@ -1,6 +1,6 @@
 # Acquirers
 
-![Python Acquirers](python-acquirers.png "Python Acquirers")
+![Python Acquirers](https://github.com/vanzhiganov/acquirers/raw/master/python-acquirers.png "Python Acquirers")
 
 [![Acquirers at PYPI](https://img.shields.io/pypi/v/acquirers.svg)](https://pypi.org/project/Acquirers/)
 
