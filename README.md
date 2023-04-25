@@ -46,10 +46,7 @@ Result
     "PaymentId": "14458036",
     "OrderId": "02eb4dae-ec1e-44b2-844f-4e5c21e0bb88",
     "Amount": 100,
-    "PaymentURL": "https://securepay.tinkoff.ru/pX81zg",
-    "DATA": {
-        "Phone": "+79999999999"
-    }
+    "PaymentURL": "https://securepay.tinkoff.ru/pX81zg"
 }
 ```
 
