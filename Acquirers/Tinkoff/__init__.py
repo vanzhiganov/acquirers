@@ -41,6 +41,19 @@ class TinkoffSimplePayment(TinkoffBase):
     def _is_recurrent(is_recurrent: bool) -> str:
         return 'y' if is_recurrent else 'n'
 
+    @staticmethod
+    def _proccess_data_key(data: dict) -> dict:
+        allowed_items = [
+            'Phone'
+        ]
+        result = {}
+        for item in data:
+            if item not in allowed_items:
+                continue
+            result[item] = data[item]
+        return result
+
+
     def init(self, order_id, amount, ip=None, description=None, currency=None, language=None,
              customer_key=None, recurrent=False, redirect_due_date=None, data=None, receipt=None, sign_request=False):
         """Init - создание заказа
@@ -66,34 +79,36 @@ class TinkoffSimplePayment(TinkoffBase):
             'Details': 'Неверный токен. Проверьте пару TerminalKey/SecretKey.'
         }
         """
-        data = dict()
-        data['TerminalKey'] = self.terminal_id
-        data['Amount'] = amount
-        data['OrderId'] = order_id
+        request_data = dict()
+        request_data['TerminalKey'] = self.terminal_id
+        request_data['Amount'] = amount
+        request_data['OrderId'] = order_id
 
         if ip:
-            data['IP'] = ip
+            request_data['IP'] = ip
         if description:
-            data['Description'] = description
+            request_data['Description'] = description
         if language:
-            data['Language'] = self._get_language(language)
+            request_data['Language'] = self._get_language(language)
         if customer_key:
-            data['CustomerKey'] = customer_key
+            request_data['CustomerKey'] = customer_key
         if recurrent:
-            data['Recurrent'] = self._is_recurrent(recurrent)
+            request_data['Recurrent'] = self._is_recurrent(recurrent)
             #
-            if not data['CustomerKey']:
+            if not request_data['CustomerKey']:
                 raise TinkoffSimplePaymentInitParameterRequiredException('customer_key')
+        if data:
+            request_data['DATA'] = self._proccess_data_key(data)
         if sign_request:
-            data['Token'] = self.get_signature(data)
+            request_data['Token'] = self.get_signature(request_data)
 
-        request = requests.post('https://securepay.tinkoff.ru/v2/Init', json=data)
-        data = request.json()
+        request = requests.post('https://securepay.tinkoff.ru/v2/Init', json=request_data)
+        resopnse_data = request.json()
 
-        if not data.get('Success'):
-            raise TinkoffException(data)
+        if not resopnse_data.get('Success'):
+            raise TinkoffException(resopnse_data)
 
-        return data
+        return resopnse_data
     
     def finish_authorize(self,):
         """подтверждения платежа
