@@ -32,7 +32,7 @@ API Documnetation: https://oplata.tinkoff.ru/landing/develop/documentation/proce
 from Acquirers.Tinkoff import TinkoffSimplePayment
 
 t = TinkoffSimplePayment(terminal_id, password)
-t.init(tr.id, amount_tinkoff)
+t.init(tr.id, amount_tinkoff, data={"Phone": "+79999999999"})
 ```
 
 Result
